@@ -1,0 +1,9 @@
+---
+flutter_native_splash:
+  image: "assets/icons/logo.jpg"
+  color: "#30D5C8"
+  web: false
+
+  android_12:
+    image: "assets/icons/logo.jpg"
+    icon_background_color: "#30D5C8"
