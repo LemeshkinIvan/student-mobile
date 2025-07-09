@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class CustomTextField extends StatelessWidget {
   final TextEditingController? controller;
   final String hint;
-  final Function onChanged;
+  final Function(String? value) onChanged;
   final Function onTap;
   final List<TextInputFormatter>? filter;
   final int? length;
@@ -27,7 +27,7 @@ class CustomTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context){
     return TextField(
-      onChanged: onChanged(),
+      onChanged: (value) => onChanged(value) ,
       onTap: onTap(),
       readOnly: isReadOnly,
       maxLength: length ?? 20,

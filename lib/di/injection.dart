@@ -17,12 +17,12 @@ import 'package:student_cabinet_app/domain/repository/main_menu_repository.dart'
 import 'package:student_cabinet_app/domain/repository/news_repository.dart';
 import 'package:student_cabinet_app/domain/repository/schedule_repository.dart';
 import 'package:student_cabinet_app/domain/repository/updating_repository.dart';
-import 'package:student_cabinet_app/pages/app_updating/bloc/app_updating_bloc.dart';
-import 'package:student_cabinet_app/pages/auth/bloc/auth_bloc.dart';
-import 'package:student_cabinet_app/pages/document/bloc/document_bloc.dart';
-import 'package:student_cabinet_app/pages/main_menu/bloc/main_menu_bloc.dart';
-import 'package:student_cabinet_app/pages/news/bloc/news_bloc.dart';
-import 'package:student_cabinet_app/pages/schedule/bloc/schedule_bloc.dart';
+import 'package:student_cabinet_app/screens/app_updating/bloc/app_updating_bloc.dart';
+import 'package:student_cabinet_app/screens/auth/bloc/auth_bloc.dart';
+import 'package:student_cabinet_app/screens/document/bloc/document_bloc.dart';
+import 'package:student_cabinet_app/screens/main_menu/bloc/main_menu_cubit.dart';
+import 'package:student_cabinet_app/screens/news/bloc/news_bloc.dart';
+import 'package:student_cabinet_app/screens/schedule/bloc/schedule_bloc.dart';
 
 class Injection {
   final getIt = GetIt.instance;
@@ -33,6 +33,7 @@ class Injection {
     _setupBlocsLocator();
     _setupRepositoriesLocator();
   }
+
 
   void _setupNetworkUtilLocator(){
     getIt.registerLazySingleton<HttpAuthUtil>(() => HttpAuthUtil());
@@ -92,8 +93,8 @@ class Injection {
       AuthBloc(getIt<AuthRepository>())
     );
 
-    getIt.registerLazySingleton<MainMenuBloc>(() => 
-      MainMenuBloc(getIt<MainMenuRepository>())
+    getIt.registerLazySingleton<MainMenuCubit>(() => 
+      MainMenuCubit(getIt<MainMenuRepository>())
     );
 
     getIt.registerLazySingleton<DocumentBloc>(() => 
