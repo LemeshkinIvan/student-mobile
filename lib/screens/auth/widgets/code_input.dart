@@ -12,30 +12,33 @@ class CodeInput extends StatefulWidget {
   State<StatefulWidget> createState() => _CodeInputState();
 }
 
-class _CodeInputState extends State<CodeInput>{
+class _CodeInputState extends State<CodeInput> {
   TextEditingController codeController = TextEditingController();
 
-  @override 
-  Widget build(BuildContext context){
-    return DefaultPadding (
-      width: 5.w, height: 10.h,
+  @override
+  Widget build(BuildContext context) {
+    return DefaultPadding(
+      width: 5.w,
+      height: 10.h,
       child: CustomTextField(
-          onTap: (){},
-          isReadOnly: false,
-          controller: codeController,
-          hint: "Введите 6-ти значный код",
-          type: TextInputType.text,
-          onChanged: (value){
-            // глубока кроличья нора ...
-            if (value != null){
-              if (value.isNotEmpty){
-                context.read<AuthBloc>().add(SetInputTextEvent(value));
-              }
-            }
-          },
-          filter: null,
-          length: 6
+        onTap: () {},
+        isReadOnly: false,
+        controller: codeController,
+        hint: "Введите 6-ти значный код",
+        type: TextInputType.text,
+        onSubmit: (_) => onSubmit(),
+        onChanged: (value) => onChanged(value),
+        filter: null,
+        length: 6,
       ),
     );
+  }
+
+  onSubmit() => context.read<AuthBloc>().add(const LoginSubmitEvent());
+
+  onChanged(String value) {
+    if (value.isNotEmpty) {
+      context.read<AuthBloc>().add(SetInputTextEvent(value));
+    }
   }
 }

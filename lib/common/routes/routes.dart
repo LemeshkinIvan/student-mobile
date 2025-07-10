@@ -9,7 +9,7 @@ import 'package:student_cabinet_app/screens/auth/bloc/auth_bloc.dart';
 import 'package:student_cabinet_app/screens/document/bloc/document_bloc.dart';
 import 'package:student_cabinet_app/screens/document/list_of_documents/document_library_screen.dart';
 import 'package:student_cabinet_app/screens/document/viewing_a_document/document_viewer.dart';
-import 'package:student_cabinet_app/screens/main_menu/bloc/main_menu_cubit.dart';
+import 'package:student_cabinet_app/screens/main_menu/cubit/main_menu_cubit.dart';
 import 'package:student_cabinet_app/screens/main_menu/main_menu_screen.dart';
 import 'package:student_cabinet_app/screens/news/bloc/news_bloc.dart';
 import 'package:student_cabinet_app/screens/news/news_screen.dart';

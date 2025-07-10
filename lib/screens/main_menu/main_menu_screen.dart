@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:student_cabinet_app/common/routes/names.dart';
 import 'package:student_cabinet_app/common/widgets/default_app_bar.dart';
-import 'package:student_cabinet_app/screens/main_menu/bloc/main_menu_cubit.dart';
+import 'package:student_cabinet_app/screens/main_menu/cubit/main_menu_cubit.dart';
 import 'package:student_cabinet_app/screens/main_menu/widgets/menu_tiles/buttons_container.dart';
 import 'package:student_cabinet_app/common/widgets/user_icon.dart';
 

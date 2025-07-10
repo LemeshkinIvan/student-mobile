@@ -14,28 +14,34 @@ part 'auth_state.dart';
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthRepository _repository;
 
-  AuthBloc(this._repository) : super(AuthState.init()){
+  AuthBloc(this._repository) : super(AuthState.init()) {
     on<GetTokensEvent>((event, emit) async {
       try {
         emit(state.copyWith(tokensPair: const ResultState.loading()));
         late ResultState<TokenResponse> result;
 
         var response = await _repository.getTokensPair(event.code);
-        response.when(success: (data) async {
-          await _repository.saveTokensAtStorage(data);
-          result = ResultState.data(data);
-          add(GetUserEvent(data.access));
-        }, failure: (e){
-          result = ResultState.error(e);
-        });
+        await response.when(
+          success: (data) async {
+            await _repository.saveTokensAtStorage(data);
+            result = ResultState.data(data);
+            add(GetUserEvent(data.access));
+          },
+          failure: (e) {
+            result = ResultState.error(e);
+          },
+        );
 
         emit(state.copyWith(tokensPair: result));
         emit(state.copyWith(enableSubmitButton: true));
-      } catch (e){
-        emit(state.copyWith(
-          tokensPair: const ResultState.error(
-            NetworkExceptions.unexpectedError()
-          ))
+        emit(state.copyWith(enableToast: true));
+      } catch (e) {
+        emit(
+          state.copyWith(
+            tokensPair: const ResultState.error(
+              NetworkExceptions.unexpectedError(),
+            ),
+          ),
         );
       }
     });
@@ -46,18 +52,26 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         late ResultState<GetUserResponse> result;
 
         var response = await _repository.getUser(event.token);
-        response.when(success: (data) async {
-          await _repository.saveUserAtStorage(data);
-          result = ResultState.data(data);
-        }, failure: (e){
-          result = ResultState.error(e);
-        });
+        await response.when(
+          success: (data) async {
+            await _repository.saveUserAtStorage(data);
+            result = ResultState.data(data);
+          },
+          failure: (e) {
+            result = ResultState.error(e);
+          },
+        );
 
         emit(state.copyWith(userInfo: result));
         emit(state.copyWith(enableSubmitButton: true));
-      } catch (e){
-        emit(state.copyWith(
-          tokensPair: const ResultState.error(NetworkExceptions.unexpectedError()))
+        emit(state.copyWith(enableToast: true));
+      } catch (e) {
+        emit(
+          state.copyWith(
+            tokensPair: const ResultState.error(
+              NetworkExceptions.unexpectedError(),
+            ),
+          ),
         );
       }
     });
@@ -65,34 +79,34 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<LoginSubmitEvent>((event, emit) async {
       String code = state.inputCode;
 
-      if (code.isNotEmpty){
+      if (code.isNotEmpty) {
         String hashCode = _generateInputCodeToMd5(code);
         emit(state.copyWith(enableSubmitButton: false));
         add(GetTokensEvent(hashCode));
       }
     });
 
-    on<SetInputTextEvent>((event, emit){
-      state.copyWith(enableSubmitButton: event.text.isNotEmpty);
-      state.copyWith(inputCode: event.text);
+    on<SetInputTextEvent>((event, emit) {
+      emit(state.copyWith(enableSubmitButton: event.text.isNotEmpty));
+      emit(state.copyWith(inputCode: event.text));
     });
 
-    on<AuthEnableToast>((event, emit){
+    on<AuthEnableToast>((event, emit) {
       emit(state.copyWith(enableToast: event.flag));
     });
 
-    on<NullGetUserInfoStateEvent>((event, emit){
-      emit(state.copyWith(
-        userInfo: const ResultState.idle(),
-      ));
+    on<NullGetUserInfoStateEvent>((event, emit) {
+      emit(state.copyWith(userInfo: const ResultState.idle()));
     });
 
-    on<NullAuthAllStatesEvent>((event, emit){
-      emit(state.copyWith(
-        userInfo: const ResultState.idle(),
-        tokensPair: const ResultState.idle(),
-        enableToast: false
-      ));
+    on<NullAuthAllStatesEvent>((event, emit) {
+      emit(
+        state.copyWith(
+          userInfo: const ResultState.idle(),
+          tokensPair: const ResultState.idle(),
+          enableToast: false,
+        ),
+      );
     });
   }
 

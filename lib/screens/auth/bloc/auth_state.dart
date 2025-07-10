@@ -4,7 +4,7 @@ class AuthState {
   ResultState<GetUserResponse> userInfo;
   ResultState<TokenResponse> tokensPair;
   bool enableToast;
-  String inputCode; 
+  String inputCode;
   bool enableSubmitButton;
   String toastMsg;
 
@@ -14,7 +14,7 @@ class AuthState {
     required this.tokensPair,
     required this.inputCode,
     required this.enableSubmitButton,
-    required this.toastMsg
+    required this.toastMsg,
   });
 
   AuthState.init({
@@ -22,8 +22,8 @@ class AuthState {
     this.enableToast = false,
     this.tokensPair = const ResultState.idle(),
     this.inputCode = "",
-    this.enableSubmitButton = true,
-    this.toastMsg = ""
+    this.enableSubmitButton = false,
+    this.toastMsg = "",
   });
 
   AuthState copyWith({
@@ -32,15 +32,15 @@ class AuthState {
     ResultState<TokenResponse>? tokensPair,
     String? inputCode,
     bool? enableSubmitButton,
-    String? toastMsg
-  }){
+    String? toastMsg,
+  }) {
     return AuthState(
-        userInfo : userInfo ?? this.userInfo,
-        enableToast: enableToast ?? this.enableToast,
-        tokensPair: tokensPair ?? this.tokensPair,
-        inputCode: inputCode ?? this.inputCode,
-        enableSubmitButton: enableSubmitButton ?? this.enableSubmitButton,
-        toastMsg: toastMsg ?? this.toastMsg
+      userInfo: userInfo ?? this.userInfo,
+      enableToast: enableToast ?? this.enableToast,
+      tokensPair: tokensPair ?? this.tokensPair,
+      inputCode: inputCode ?? this.inputCode,
+      enableSubmitButton: enableSubmitButton ?? this.enableSubmitButton,
+      toastMsg: toastMsg ?? this.toastMsg,
     );
   }
 }

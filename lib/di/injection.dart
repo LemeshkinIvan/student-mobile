@@ -20,7 +20,7 @@ import 'package:student_cabinet_app/domain/repository/updating_repository.dart';
 import 'package:student_cabinet_app/screens/app_updating/bloc/app_updating_bloc.dart';
 import 'package:student_cabinet_app/screens/auth/bloc/auth_bloc.dart';
 import 'package:student_cabinet_app/screens/document/bloc/document_bloc.dart';
-import 'package:student_cabinet_app/screens/main_menu/bloc/main_menu_cubit.dart';
+import 'package:student_cabinet_app/screens/main_menu/cubit/main_menu_cubit.dart';
 import 'package:student_cabinet_app/screens/news/bloc/news_bloc.dart';
 import 'package:student_cabinet_app/screens/schedule/bloc/schedule_bloc.dart';
 

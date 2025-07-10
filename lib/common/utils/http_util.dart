@@ -18,31 +18,36 @@ class HttpUtil {
     return _instance;
   }
 
-  HttpUtil._internal(){
+  HttpUtil._internal() {
     BaseOptions options = BaseOptions(
-        baseUrl: AppManager.serverUrlApi,
-        connectTimeout: const Duration(seconds: 5),
-        receiveTimeout: const Duration(seconds: 30),
-        headers: {},
-        contentType: "application/json",
-        responseType: ResponseType.json);
+      baseUrl: AppManager.serverUrlApi,
+      connectTimeout: const Duration(seconds: 5),
+      receiveTimeout: const Duration(seconds: 30),
+      headers: {},
+      contentType: "application/json",
+      responseType: ResponseType.json,
+    );
     _request = Dio(options);
     if (kDebugMode) {
-      _request.interceptors.add(LogInterceptor(
+      _request.interceptors.add(
+        LogInterceptor(
           responseBody: true,
           error: true,
           requestHeader: true,
           responseHeader: false,
           request: true,
-          requestBody: true));
+          requestBody: true,
+        ),
+      );
     }
   }
   Future<dynamic> get(
-      String uri, {
-        Map<String, dynamic>? queryParameters,
-        Options? options,
-        CancelToken? cancelToken,
-        ProgressCallback? onReceiveProgress,}) async {
+    String uri, {
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+    CancelToken? cancelToken,
+    ProgressCallback? onReceiveProgress,
+  }) async {
     try {
       var response = await _request.get(
         uri,
@@ -62,14 +67,14 @@ class HttpUtil {
   }
 
   Future<dynamic> post(
-      String uri, {
-        data,
-        Map<String, dynamic>? queryParameters,
-        Options? options,
-        CancelToken? cancelToken,
-        ProgressCallback? onSendProgress,
-        ProgressCallback? onReceiveProgress,
-      }) async {
+    String uri, {
+    data,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+    CancelToken? cancelToken,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
     try {
       var response = await _request.post(
         uri,
@@ -100,12 +105,13 @@ class HttpAuthUtil {
 
   HttpAuthUtil._internal() {
     BaseOptions options = BaseOptions(
-        baseUrl: AppManager.serverUrlApi,
-        connectTimeout: const Duration(seconds: 5),
-        receiveTimeout: const Duration(seconds: 30),
-        headers: {},
-        contentType: "application/json",
-        responseType: ResponseType.json);
+      baseUrl: AppManager.serverUrlApi,
+      connectTimeout: const Duration(seconds: 5),
+      receiveTimeout: const Duration(seconds: 30),
+      headers: {},
+      contentType: "application/json",
+      responseType: ResponseType.json,
+    );
     dio = Dio(options)..httpClientAdapter;
     dio.interceptors.add(
       InterceptorsWrapper(
@@ -115,7 +121,9 @@ class HttpAuthUtil {
               await Future.delayed(const Duration(milliseconds: 100));
             }
           }
-          final String accessToken = HiveStorage.instance.getStringByKey(AppConstants.accessToken) ?? '';
+          final String accessToken =
+              HiveStorage.instance.getStringByKey(AppConstants.accessToken) ??
+              '';
           if (accessToken.isNotEmpty) {
             options.headers['Authorization'] = 'Bearer $accessToken';
           }
@@ -126,9 +134,11 @@ class HttpAuthUtil {
             while (_isTokenRefreshing) {
               await Future.delayed(const Duration(milliseconds: 100));
             }
-            final String accessToken = HiveStorage.instance.getStringByKey(AppConstants.accessToken) ?? '';
+            final String accessToken =
+                HiveStorage.instance.getStringByKey(AppConstants.accessToken) ??
+                '';
             if (accessToken.isNotEmpty) {
-              e.requestOptions.headers['Authorization'] ='Bearer $accessToken';
+              e.requestOptions.headers['Authorization'] = 'Bearer $accessToken';
             }
             return handler.resolve(await dio.fetch(e.requestOptions));
           }
@@ -136,21 +146,38 @@ class HttpAuthUtil {
               e.response?.requestOptions.headers['Authorization'] != null) {
             try {
               _isTokenRefreshing = true;
-              final String refreshToken = HiveStorage.instance.getStringByKey(AppConstants.accessToken) ?? '';
-              final response = await HttpUtil().post("auth/refresh/", data: {"token" : refreshToken} );
+              final String refreshToken =
+                  HiveStorage.instance.getStringByKey(
+                    AppConstants.accessToken,
+                  ) ??
+                  '';
+              final response = await HttpUtil().post(
+                "auth/refresh/",
+                data: {"token": refreshToken},
+              );
               TokenResponse tokens = TokenResponse.fromJson(response);
-              await HiveStorage.instance.setValue(AppConstants.accessToken, tokens.access);
-              await HiveStorage.instance.setValue(AppConstants.refreshToken, tokens.refresh);
+              await HiveStorage.instance.setValue(
+                AppConstants.accessToken,
+                tokens.access,
+              );
+              await HiveStorage.instance.setValue(
+                AppConstants.refreshToken,
+                tokens.refresh,
+              );
 
-              e.requestOptions.headers['Authorization'] = 'Bearer ${tokens.access}';
+              e.requestOptions.headers['Authorization'] =
+                  'Bearer ${tokens.access}';
               _isTokenRefreshing = false;
               return handler.resolve(await dio.fetch(e.requestOptions));
             } catch (e) {
               if (NetworkExceptions.getErrorType(
-                  NetworkExceptions.getDioException(e)) == "unauthorized") {
-               
+                    NetworkExceptions.getDioException(e),
+                  ) ==
+                  "unauthorized") {
                 //toastInfo(msg: "Не получилось обновить сессию");
-                navigatorKey.currentState?.pushReplacementNamed(AppRoutes.initial);
+                navigatorKey.currentState?.pushReplacementNamed(
+                  AppRoutes.initial,
+                );
               }
             } finally {
               _isTokenRefreshing = false;
@@ -161,25 +188,26 @@ class HttpAuthUtil {
       ),
     );
     if (kDebugMode) {
-      dio.interceptors.add(LogInterceptor(
+      dio.interceptors.add(
+        LogInterceptor(
           responseBody: true,
           error: true,
           requestHeader: true,
           responseHeader: false,
           request: true,
-          requestBody: true
-        )
+          requestBody: true,
+        ),
       );
     }
   }
 
   Future<dynamic> get(
-      String uri, {
-        Map<String, dynamic>? queryParameters,
-        Options? options,
-        CancelToken? cancelToken,
-        ProgressCallback? onReceiveProgress,
-      }) async {
+    String uri, {
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+    CancelToken? cancelToken,
+    ProgressCallback? onReceiveProgress,
+  }) async {
     try {
       var response = await dio.get(
         uri,
@@ -199,14 +227,14 @@ class HttpAuthUtil {
   }
 
   Future<dynamic> post(
-      String uri, {
-        data,
-        Map<String, dynamic>? queryParameters,
-        Options? options,
-        CancelToken? cancelToken,
-        ProgressCallback? onSendProgress,
-        ProgressCallback? onReceiveProgress,
-      }) async {
+    String uri, {
+    data,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+    CancelToken? cancelToken,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
     try {
       var response = await dio.post(
         uri,
